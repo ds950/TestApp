@@ -1,0 +1,44 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>пох</title>
+</head>
+<body>
+    <div>
+        <form action="/logout" method="post">
+            <input type="submit" value="Выйти">
+            <input type="hidden" name="_csrf" value="{{_csrf.token}}">
+        </form>
+    </div>
+    <div>
+        <form method="post">
+            <input type="text" name="username" placeholder="Введите логин">
+            <input type="text" name="email" placeholder="Введите ЭП">
+            <button type="submit">Добавить</button>
+            <input type="hidden" name="_csrf" value="{{_csrf.token}}">
+        </form>
+    </div>
+
+    <form method="post" action="deleteAll">
+        <button type="submit">Очистить</button>
+        <input type="hidden" name="_csrf" value="{{_csrf.token}}">
+    </form>
+    <form method="post" action="findById">
+        <input type="number" name="id" placeholder="Введите ID">
+        <button type="submit">Найти по ID</button>
+        <input type="hidden" name="_csrf" value="{{_csrf.token}}">
+    </form>
+    <div>Список пользователей</div>
+    {{#users}}
+    <div>
+        <b>{{id}}</b>
+        <span>{{username}}</span>
+        <i>{{email}}</i>
+        <img src="img/{{avatar}}">
+    </div>
+    {{/users}}
+
+    </form>
+
+</body>
+</html>

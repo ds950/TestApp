@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login Page</title>
+</head>
+<body>
+add new user
+{{#warningMessage}}
+    {{warningMessage}}
+{{/warningMessage}}
+<form action="/registration" method="post" enctype="multipart/form-data">
+    <div><label> Логин: <input type="text" name="username"></label></div>
+    <div><label> Пароль: <input type="password" name="password"></label></div>
+    <div><label> Электронная почта: <input type="email" name="email"></label></div>
+    <div><label> Аватар: <input type="file" accept="image/jpeg" name="file"></label></div>
+    <input type="hidden" name="_csrf" value="{{_csrf.token}}">
+    <div><input type="submit" value="Войти"></div>
+
+</form>
+</body>
+</html>
