@@ -15,12 +15,7 @@ public class Users {
     private String password;
     private boolean active;
     private String avatar;
-
-    // Связь таблицы пользователей с таблицей РОЛИ
-    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
-    @Enumerated(EnumType.STRING)
-    private Set<Role> roles;
+    private String status;
 
     public Users() {
     }
@@ -65,14 +60,6 @@ public class Users {
         this.active = active;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
-
     public String getAvatar() {
         return avatar;
     }
@@ -80,4 +67,13 @@ public class Users {
     public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }
+

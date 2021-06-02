@@ -2,20 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login Page</title>
+    <title>Add new User</title>
 </head>
 <body>
-add new user
+<p style="color:red">
 {{#warningMessage}}
     {{warningMessage}}
 {{/warningMessage}}
+</p><br>
 <form action="/registration" method="post" enctype="multipart/form-data">
-    <div><label> Логин: <input type="text" name="username"></label></div>
-    <div><label> Пароль: <input type="password" name="password"></label></div>
-    <div><label> Электронная почта: <input type="email" name="email"></label></div>
-    <div><label> Аватар: <input type="file" accept="image/jpeg" name="file"></label></div>
-    <input type="hidden" name="_csrf" value="{{_csrf.token}}">
-    <div><input type="submit" value="Войти"></div>
+    <div><label> Логин: <input type="text" name="username"></label></div><br>
+    <div><label> Пароль: <input type="password" name="password"></label></div><br>
+    <div><label> Электронная почта: <input type="email" name="email"></label></div><br>
+    <div><label> Аватар: <input type="file" accept="image/jpeg" name="file"></label></div><br>
+    <input type="hidden" name="status" value="Offline">
+    <div><input type="submit" value="Зарегистрировать"></div>
 
 </form>
 </body>
