@@ -6,8 +6,10 @@ import com.example.testapplication.repository.UsersRepo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.Date;
@@ -55,8 +57,12 @@ public class RESTfulController {
     }
 */
     @GetMapping("findById")
-    Users users(Integer id){
-        return usersRepo.findById(id);
+    List<Users> users(Integer id){
+       List<Users> users = usersRepo.findAllById(id);
+        if (users.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Users not found");
+        }
+        return users;
     }
 
     @GetMapping("findByStatus")
