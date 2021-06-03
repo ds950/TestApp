@@ -12,9 +12,6 @@ public class RegistrationController {
     @Autowired
     UsersRepo usersRepo;
 
-    @Value("${file.upload-dir}")
-    private String uploadPath;
-
     @GetMapping("/registration")
     public String registration() {
         return "registration";

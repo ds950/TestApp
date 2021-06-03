@@ -3,7 +3,6 @@ package com.example.testapplication.entity;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.Set;
 
 @Entity// This tells Hibernate to make a table out of this class
 @Table(name = "users")

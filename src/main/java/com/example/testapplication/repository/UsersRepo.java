@@ -9,6 +9,6 @@ public interface UsersRepo extends JpaRepository<Users, Long> {
 
     Users findById(Integer id);
     List <Users> findAllById(Integer id);
-    Users findByUsername(String username);
+    //Users findByUsername(String username);
     List<Users> findByStatus(String status);
 }
