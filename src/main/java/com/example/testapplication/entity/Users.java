@@ -2,6 +2,7 @@ package com.example.testapplication.entity;
 
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.Set;
 
 @Entity// This tells Hibernate to make a table out of this class
@@ -10,6 +11,7 @@ public class Users {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer id;
+    private Date reg_date;
     private String username;
     private String email;
     private String password;
@@ -26,6 +28,14 @@ public class Users {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Date getReg_date() {
+        return reg_date;
+    }
+
+    public void setReg_date(Date reg_date) {
+        this.reg_date = reg_date;
     }
 
     public String getUsername() {

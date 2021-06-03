@@ -19,6 +19,7 @@ public class SavingOnHDD {
         String fileOS = uploadPath + "/" + resaultFileName;
         //Сохранение файла на сервере
         file.transferTo(new File(fileOS));
+
         return resaultFileName;
     }
 }
