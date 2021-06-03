@@ -69,11 +69,15 @@ public class RESTfulController {
     HashMap<String, Object> users(String status){
         List <Users> user = usersRepo.findByStatus(status);
         HashMap<String, Object> result = new HashMap<>();
-        for (Users t : user) {
-            result.put("id", t.getId());
-            result.put("status", t.getStatus());
-            result.put("avatar", t.getAvatar());
-            result.put("query_timestamp", new Date());
+        if (!user.isEmpty()){
+            for (Users t : user) {
+                result.put("id", t.getId());
+                result.put("status", t.getStatus());
+                result.put("avatar", t.getAvatar());
+                result.put("query_timestamp", new Date());
+            }
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Users with " + status + " status not found");
         }
         return result;
     }
