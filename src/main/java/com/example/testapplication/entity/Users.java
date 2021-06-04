@@ -2,6 +2,8 @@ package com.example.testapplication.entity;
 
 
 import javax.persistence.*;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity// This tells Hibernate to make a table out of this class
@@ -17,6 +19,7 @@ public class Users {
     private boolean active;
     private String avatar;
     private String status;
+    private Timestamp statusChangeTimestamp;
 
     public Users() {
     }
@@ -83,6 +86,14 @@ public class Users {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Timestamp getStatusChangeTimestamp() {
+        return statusChangeTimestamp;
+    }
+
+    public void setStatusChangeTimestamp(Timestamp statusChangeTimestamp) {
+        this.statusChangeTimestamp = statusChangeTimestamp;
     }
 }
 

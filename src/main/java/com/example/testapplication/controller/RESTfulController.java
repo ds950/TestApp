@@ -1,21 +1,24 @@
 package com.example.testapplication.controller;
 
-import com.example.testapplication.SavingOnHDD;
+import com.example.testapplication.service.FIleUtils;
+import com.example.testapplication.entity.Avatar;
 import com.example.testapplication.entity.Users;
+import com.example.testapplication.repository.AvatarRepo;
 import com.example.testapplication.repository.UsersRepo;
+import com.example.testapplication.service.StatisticResult;
+import com.example.testapplication.service.StatusChangeService;
+import com.example.testapplication.service.UserService;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.IOException;
-import java.util.Date;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 public class RESTfulController {
@@ -25,37 +28,24 @@ public class RESTfulController {
     @Autowired
     private UsersRepo usersRepo;
 
-    @Value("${file.upload-dir}")
-    private String uploadPath;
+    @Autowired
+    private AvatarRepo avatarRepo;
 
-  /*  public String main(Map <String, Object> model) {
-        Iterable<Users> users = usersRepo.findAll();
-        model.put("users", users);
-        return "main";
+    private LocalDateTime localDateTime;
+
+   @GetMapping("/registration")
+   public String registration() {
+       return "registration";
+   }
+
+    @PostMapping("/registration")
+    public Integer addNewUser(String fIleUtils, Users user) {
+        //Если файл выбран, запускается метод срхранения на HDD на сервере
+        Users users = new UserService().addNewUser(user, fIleUtils);
+        return users.getId();
     }
 
- /*   @PostMapping("/main")
-    public String addNewUser(@RequestParam String username, @RequestParam String email, Map<String, Object> map) {
-        Users user = new Users(username, email);
-        usersRepo.save(user);
-        Iterable<Users> users = usersRepo.findAll();
-        map.put("users", users);
-        return "main";
-    }
-*/
-    /*@PostMapping("deleteAll")
-    public String deleteAll(Map<String, Object> map){
-        Iterable<Users> users = usersRepo.findAll();
-        usersRepo.deleteAll(users);
-        map.put("users", users);
-        return "redirect:/";
-    }*/
-
-   /* @PostMapping("findById")
-    public String findById(Integer id, Map<String, Object> map){
-        return String.valueOf(usersRepo.findById(id));
-    }
-*/
+    //поиск по Id  и вывод всех данных
     @GetMapping("findById")
     List<Users> users(Integer id){
        List<Users> users = usersRepo.findAllById(id);
@@ -65,50 +55,39 @@ public class RESTfulController {
         return users;
     }
 
-    @GetMapping("findByStatus")
-    HashMap<String, Object> users(String status){
-        List <Users> user = usersRepo.findByStatus(status);
-        HashMap<String, Object> result = new HashMap<>();
-        if (!user.isEmpty()){
-            for (Users t : user) {
-                result.put("id", t.getId());
-                result.put("status", t.getStatus());
-                result.put("avatar", t.getAvatar());
-                result.put("query_timestamp", new Date());
-            }
+    //поиск по статусу и времени. если время не указано, ищет только по статусу
+    @GetMapping("stats")
+    HashMap<String, Object> findByChangeTime(String status, Timestamp time , StatisticResult statisticResult) {
+        List<Users> users;
+        if (time != null) {
+            users = usersRepo.findAllByStatusChangeTimestampAfter(time);
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Users with " + status + " status not found");
+            users = usersRepo.findByStatus(status);
         }
+        return statisticResult.buildStats(users);
+    }
+
+    //добавление уникального имени картинки в базу, имитирует запись файла в бд
+    @PostMapping("addAvatar")
+    public String loadAvatar(@RequestParam("file") MultipartFile file, Avatar avatar) {
+        String result = FIleUtils.saveToCloud(file);
+        avatar.setFileUri(result);
+        avatarRepo.save(avatar);
         return result;
     }
 
-    @PostMapping("/registration")
-    public Map<String, Object> addNewUser(@RequestParam("file") MultipartFile file, Users user) throws IOException {
-        //Если файл выбран, запускается метод срхранения на HDD на сервере
-        if (file != null && !file.isEmpty()) {
-            user.setAvatar(SavingOnHDD.save(uploadPath, file));
-        }
-        HashMap<String, Object> resultId = new HashMap<>();
-        user.setActive(true);
-        user.setReg_date(new Date());
-        usersRepo.save(user);
-        resultId.put("id", user.getId());
-        return resultId;
-    }
-
+    //смена статуса с последующим отображением предыдущего статуса и времени изменения
     @PostMapping("changeStatus")
-    public HashMap<String, Object> changeStatus(@RequestParam Integer id,
-                                 String status) {
-        HashMap<String, Object> statuses = new HashMap<>();
+    public HashMap<String, Object> changeStatus(@RequestParam Integer id, String status, StatusChangeService statusChangeService) {
         Users user = usersRepo.findById(id);
-        String prevStatus = user.getStatus();
-        user.setStatus(status);
-        statuses.put("id", user.getId());
-        statuses.put("status", status);
-        statuses.put("prevStatus", prevStatus);
-        usersRepo.save(user);
+        Integer userId = user.getId();
+        Users updateUser = usersRepo.findById(userId);
+        String prevStatus = updateUser.getStatus();
+        updateUser.setStatus(status);
+        updateUser.setStatusChangeTimestamp(Timestamp.valueOf(LocalDateTime.now()));
+        usersRepo.save(updateUser);
 
-        return statuses;
+        return statusChangeService.changeToJson(user,prevStatus);
     }
 
 }
