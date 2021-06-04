@@ -3,7 +3,6 @@ package com.example.testapplication.entity;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity// This tells Hibernate to make a table out of this class

@@ -31,14 +31,7 @@ public class RESTfulController {
     @Autowired
     private AvatarRepo avatarRepo;
 
-    private LocalDateTime localDateTime;
-
-   @GetMapping("/registration")
-   public String registration() {
-       return "registration";
-   }
-
-    @PostMapping("/registration")
+    @PostMapping("registration")
     public Integer addNewUser(String fIleUtils, Users user) {
         //Если файл выбран, запускается метод срхранения на HDD на сервере
         Users users = new UserService().addNewUser(user, fIleUtils);
